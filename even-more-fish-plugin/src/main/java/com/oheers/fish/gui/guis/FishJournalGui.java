@@ -3,6 +3,7 @@ package com.oheers.fish.gui.guis;
 import com.oheers.fish.EvenMoreFish;
 import com.oheers.fish.FishUtils;
 import com.oheers.fish.config.GuiConfig;
+import com.oheers.fish.config.GuiFillerConfig;
 import com.oheers.fish.database.Database;
 import com.oheers.fish.database.data.FishRarityKey;
 import com.oheers.fish.database.data.UserFishRarityKey;
@@ -12,16 +13,20 @@ import com.oheers.fish.fishing.items.Fish;
 import com.oheers.fish.fishing.items.FishManager;
 import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.gui.ConfigGui;
+import com.oheers.fish.gui.GuiUtils;
 import com.oheers.fish.items.ItemFactory;
 import com.oheers.fish.messages.EMFListMessage;
 import com.oheers.fish.messages.EMFSingleMessage;
 import com.oheers.fish.api.Logging;
+import com.oheers.fish.utils.ItemUtils;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -221,6 +226,66 @@ public class FishJournalGui extends ConfigGui {
         }
 
         return rarityItem;
+    }
+
+    @Override
+    public void createGui() {
+        // Nếu có rarity và rarity có journal-title, sử dụng journal-title từ rarity
+        if (this.rarity != null) {
+            String journalTitle = this.rarity.getJournalTitle();
+            if (journalTitle != null && !journalTitle.isEmpty()) {
+                // Xử lý placeholder {rarity} nếu có
+                journalTitle = journalTitle.replace("{rarity}", this.rarity.getDisplayName().getLegacyMessage());
+                
+                // Tạo GUI với title từ rarity (copy logic từ ConfigGui.createGui())
+                if (this.config == null) {
+                    this.gui = new InventoryGui(
+                        EvenMoreFish.getInstance(),
+                        "Empty Gui",
+                        new String[0]
+                    );
+                    return;
+                }
+                String[] layout = this.config.getStringList("layout").stream().limit(6).toArray(String[]::new);
+                InventoryGui gui = new InventoryGui(
+                    EvenMoreFish.getInstance(),
+                    EMFSingleMessage.fromString(journalTitle).getLegacyMessage(),
+                    layout
+                );
+                // Load filler
+                String fillerStr = this.config.getString("filler");
+                if (fillerStr != null) {
+                    Material filler = ItemUtils.getMaterial(fillerStr);
+                    if (filler != null) {
+                        ItemStack item = new ItemStack(filler);
+                        item.editMeta(meta -> meta.displayName(Component.empty()));
+                        gui.setFiller(item);
+                        gui.addElements(GuiFillerConfig.getInstance().getDefaultFillerItems(this));
+                    }
+                }
+                // Load items
+                gui.addElements(
+                    GuiUtils.getFirstPageButton(),
+                    GuiUtils.getPreviousPageButton(),
+                    GuiUtils.getNextPageButton(),
+                    GuiUtils.getLastPageButton()
+                );
+                this.config.getRoutesAsStrings(false).forEach(key -> {
+                    Section itemSection = this.config.getSection(key);
+                    if (itemSection == null || !itemSection.contains("item")) {
+                        return;
+                    }
+                    addGuiItem(gui, itemSection);
+                });
+                gui.setCloseAction(closeAction);
+
+                this.gui = gui;
+                return;
+            }
+        }
+        
+        // Fallback về title từ config như bình thường
+        super.createGui();
     }
 
     @Override

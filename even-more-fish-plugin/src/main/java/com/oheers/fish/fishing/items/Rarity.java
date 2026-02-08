@@ -99,6 +99,10 @@ public class Rarity extends ConfigBase implements IRarity {
         return format(Objects.requireNonNullElseGet(displayName, this::getId));
     }
 
+    public @Nullable String getJournalTitle() {
+        return getConfig().getString("journal-title");
+    }
+
     public @NotNull EMFSingleMessage getLorePrep() {
         String loreOverride = getConfig().getString("override-lore");
         if (loreOverride != null) {
