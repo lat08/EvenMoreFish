@@ -33,8 +33,8 @@ public class ConfigGui {
     protected final Player player;
     private final @NotNull Map<String, EMFMessage> replacements = new HashMap<>();
 
-    private InventoryGui gui;
-    private InventoryGui.CloseAction closeAction = null;
+    protected InventoryGui gui;
+    protected InventoryGui.CloseAction closeAction = null;
 
     // TODO Bring the action map to this class when we switch to Triumph
     public ConfigGui(@Nullable Section config, @NotNull HumanEntity player) {

@@ -142,15 +142,30 @@ public enum ConfigMessage {
             PrefixType.DEFAULT,
         "leaderboard-largest-fish"
     ),
+    LEADERBOARD_LARGEST_FISH_1("&a{rank} &7- &f{player} &7 - &a{rarity} &f{fish} &7(&a{length}cm&7)", PrefixType.DEFAULT, "leaderboard-largest-fish-1"),
+    LEADERBOARD_LARGEST_FISH_2("&b{rank} &7- &f{player} &7 - &b{rarity} &f{fish} &7(&b{length}cm&7)", PrefixType.DEFAULT, "leaderboard-largest-fish-2"),
+    LEADERBOARD_LARGEST_FISH_3("&e{rank} &7- &f{player} &7 - &e{rarity} &f{fish} &7(&e{length}cm&7)", PrefixType.DEFAULT, "leaderboard-largest-fish-3"),
     LEADERBOARD_LARGEST_TOTAL("<white>#{position} | {player} ({amount}cm)", PrefixType.DEFAULT, "leaderboard-largest-total"),
+    LEADERBOARD_LARGEST_TOTAL_1("&a{rank} &7- &f{player} &7 - &a{amount}cm", PrefixType.DEFAULT, "leaderboard-largest-total-1"),
+    LEADERBOARD_LARGEST_TOTAL_2("&b{rank} &7- &f{player} &7 - &b{amount}cm", PrefixType.DEFAULT, "leaderboard-largest-total-2"),
+    LEADERBOARD_LARGEST_TOTAL_3("&e{rank} &7- &f{player} &7 - &e{amount}cm", PrefixType.DEFAULT, "leaderboard-largest-total-3"),
     LEADERBOARD_MOST_FISH("<white>#{position} | {player} ({amount} fish)", PrefixType.DEFAULT, "leaderboard-most-fish"),
+    LEADERBOARD_MOST_FISH_1("&a{rank} &7- &f{player} &7 - &a{amount} &ffish", PrefixType.DEFAULT, "leaderboard-most-fish-1"),
+    LEADERBOARD_MOST_FISH_2("&b{rank} &7- &f{player} &7 - &b{amount} &ffish", PrefixType.DEFAULT, "leaderboard-most-fish-2"),
+    LEADERBOARD_MOST_FISH_3("&e{rank} &7- &f{player} &7 - &e{amount} &ffish", PrefixType.DEFAULT, "leaderboard-most-fish-3"),
     LEADERBOARD_TOTAL_PLAYERS("<white>There are a total of {amount} player(s) in the leaderboard.", PrefixType.DEFAULT, "total-players"),
     LEADERBOARD_SHORTEST_FISH(
             "<white>#{position} | {player} (<b>{rarity}</b> {fish}, {length}cm)",
             PrefixType.DEFAULT,
         "leaderboard-shortest-fish"
     ),
+    LEADERBOARD_SHORTEST_FISH_1("&a{rank} &7- &f{player} &7 - &a{rarity} &f{fish} &7(&a{length}cm&7)", PrefixType.DEFAULT, "leaderboard-shortest-fish-1"),
+    LEADERBOARD_SHORTEST_FISH_2("&b{rank} &7- &f{player} &7 - &b{rarity} &f{fish} &7(&b{length}cm&7)", PrefixType.DEFAULT, "leaderboard-shortest-fish-2"),
+    LEADERBOARD_SHORTEST_FISH_3("&e{rank} &7- &f{player} &7 - &e{rarity} &f{fish} &7(&e{length}cm&7)", PrefixType.DEFAULT, "leaderboard-shortest-fish-3"),
     LEADERBOARD_SHORTEST_TOTAL("<white>#{position} | {player} ({amount}cm)", PrefixType.DEFAULT, "leaderboard-shortest-total"),
+    LEADERBOARD_SHORTEST_TOTAL_1("&a{rank} &7- &f{player} &7 - &a{amount}cm", PrefixType.DEFAULT, "leaderboard-shortest-total-1"),
+    LEADERBOARD_SHORTEST_TOTAL_2("&b{rank} &7- &f{player} &7 - &b{amount}cm", PrefixType.DEFAULT, "leaderboard-shortest-total-2"),
+    LEADERBOARD_SHORTEST_TOTAL_3("&e{rank} &7- &f{player} &7 - &e{amount}cm", PrefixType.DEFAULT, "leaderboard-shortest-total-3"),
 
     NEW_FIRST_PLACE_NOTIFICATION("<white>{player} is now #1", PrefixType.DEFAULT, "new-first"),
 

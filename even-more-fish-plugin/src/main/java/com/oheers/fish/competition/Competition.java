@@ -7,6 +7,7 @@ import com.oheers.fish.api.Logging;
 import com.oheers.fish.api.reward.Reward;
 import com.oheers.fish.competition.configs.CompetitionFile;
 import com.oheers.fish.competition.leaderboard.Leaderboard;
+import com.oheers.fish.competition.CompetitionStrategy;
 import com.oheers.fish.config.MessageConfig;
 import com.oheers.fish.database.DatabaseUtil;
 import com.oheers.fish.database.model.CompetitionReport;
@@ -397,12 +398,8 @@ public class Competition {
             }
 
             // Get the leaderboard message with length/amount defined
-            EMFMessage message;
-            if (isConsole) {
-                message = competitionType.getStrategy().getSingleConsoleLeaderboardMessage(entry);
-            } else {
-                message = competitionType.getStrategy().getSinglePlayerLeaderboard(entry);
-            }
+            // Use special format for top 3 (positions 1, 2, 3)
+            EMFMessage message = getLeaderboardMessageForPosition(entry, pos, isConsole);
 
             // Format remaining variables
             OfflinePlayer player = Bukkit.getOfflinePlayer(entry.getPlayer());
@@ -416,7 +413,9 @@ public class Competition {
             message.setVariable("{player}", colour);
             message.setPlayer(player);
 
+            // Set position/rank variable
             message.setPosition(Integer.toString(pos));
+            message.setVariable("{rank}", Integer.toString(pos));
             message.setRarity(entry.getFish().getRarity().getDisplayName());
             message.setFishCaught(entry.getFish().getDisplayName());
 
@@ -424,6 +423,83 @@ public class Competition {
         }
 
         return EMFListMessage.ofList(leaderboard);
+    }
+
+    /**
+     * Gets the appropriate leaderboard message for a given position.
+     * Uses special format for top 3 (positions 1, 2, 3), otherwise uses default format.
+     *
+     * @param entry The competition entry
+     * @param position The position in the leaderboard (1-based)
+     * @param isConsole Whether this is for console output
+     * @return The appropriate EMFMessage for this position
+     */
+    private @NotNull EMFMessage getLeaderboardMessageForPosition(@NotNull CompetitionEntry entry, int position, boolean isConsole) {
+        // For top 3, use special format
+        if (position >= 1 && position <= 3) {
+            ConfigMessage specialMessage = getSpecialLeaderboardMessage(competitionType, position);
+            if (specialMessage != null) {
+                EMFMessage message = specialMessage.getMessage();
+                // Set the value (length or amount) from the strategy
+                CompetitionStrategy strategy = competitionType.getStrategy();
+                if (strategy.shouldUseFishLength()) {
+                    message.setLength(strategy.getDecimalFormat().format(entry.getValue()));
+                } else {
+                    message.setAmount((int) entry.getValue());
+                }
+                return message;
+            }
+        }
+
+        // Fallback to default message
+        if (isConsole) {
+            return competitionType.getStrategy().getSingleConsoleLeaderboardMessage(entry);
+        } else {
+            return competitionType.getStrategy().getSinglePlayerLeaderboard(entry);
+        }
+    }
+
+    /**
+     * Gets the special leaderboard message config for top 3 positions.
+     *
+     * @param type The competition type
+     * @param position The position (1, 2, or 3)
+     * @return The ConfigMessage for this position, or null if not available
+     */
+    private @Nullable ConfigMessage getSpecialLeaderboardMessage(@NotNull CompetitionType type, int position) {
+        return switch (type) {
+            case LARGEST_FISH -> switch (position) {
+                case 1 -> ConfigMessage.LEADERBOARD_LARGEST_FISH_1;
+                case 2 -> ConfigMessage.LEADERBOARD_LARGEST_FISH_2;
+                case 3 -> ConfigMessage.LEADERBOARD_LARGEST_FISH_3;
+                default -> null;
+            };
+            case LARGEST_TOTAL -> switch (position) {
+                case 1 -> ConfigMessage.LEADERBOARD_LARGEST_TOTAL_1;
+                case 2 -> ConfigMessage.LEADERBOARD_LARGEST_TOTAL_2;
+                case 3 -> ConfigMessage.LEADERBOARD_LARGEST_TOTAL_3;
+                default -> null;
+            };
+            case MOST_FISH -> switch (position) {
+                case 1 -> ConfigMessage.LEADERBOARD_MOST_FISH_1;
+                case 2 -> ConfigMessage.LEADERBOARD_MOST_FISH_2;
+                case 3 -> ConfigMessage.LEADERBOARD_MOST_FISH_3;
+                default -> null;
+            };
+            case SHORTEST_FISH -> switch (position) {
+                case 1 -> ConfigMessage.LEADERBOARD_SHORTEST_FISH_1;
+                case 2 -> ConfigMessage.LEADERBOARD_SHORTEST_FISH_2;
+                case 3 -> ConfigMessage.LEADERBOARD_SHORTEST_FISH_3;
+                default -> null;
+            };
+            case SHORTEST_TOTAL -> switch (position) {
+                case 1 -> ConfigMessage.LEADERBOARD_SHORTEST_TOTAL_1;
+                case 2 -> ConfigMessage.LEADERBOARD_SHORTEST_TOTAL_2;
+                case 3 -> ConfigMessage.LEADERBOARD_SHORTEST_TOTAL_3;
+                default -> null;
+            };
+            default -> null; // SPECIFIC_FISH, SPECIFIC_RARITY, RANDOM use default format
+        };
     }
 
     private void handleDatabaseUpdates(CompetitionEntry entry, boolean isTopEntry) {

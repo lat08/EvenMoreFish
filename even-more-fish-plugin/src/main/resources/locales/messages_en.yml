@@ -81,11 +81,27 @@ length-lore:
   - <white>Measures {length}cm.
 
 # The format of the leaderboard after a competition is over (this message doesn't support papi placeholders)
-leaderboard-largest-fish: <white>#{position} | {player} (<b>{rarity}</b> {fish}, {length}cm)
-leaderboard-largest-total: <white>#{position} | {player} <white>({amount}cm<white>)
-leaderboard-most-fish: <white>#{position} | {player} <white>({amount} <white>fish)
-leaderboard-shortest-fish: <white>#{position} | {player} <white>(<b>{rarity}</b> {fish}<white>, {length}cm<white>)
-leaderboard-shortest-total: <white>#{position} | {player} <white>({amount}cm<white>)
+# Format này sử dụng legacy color codes và có format riêng cho top 3
+leaderboard-largest-fish: " &#B8FFD0{position} &7- &f{player} &7 - &#B8FFD0{rarity} &#E0E0E0{fish} &7(&#B8FFD0{length}cm&7)"
+leaderboard-largest-fish-1: "&a{rank} &7- &f{player} &7 - &a{rarity} &f{fish} &7(&a{length}cm&7)"
+leaderboard-largest-fish-2: "&b{rank} &7- &f{player} &7 - &b{rarity} &f{fish} &7(&b{length}cm&7)"
+leaderboard-largest-fish-3: "&e{rank} &7- &f{player} &7 - &e{rarity} &f{fish} &7(&e{length}cm&7)"
+leaderboard-largest-total: " &#B8FFD0{position} &7- &f{player} &7 - &#B8FFD0{amount}cm"
+leaderboard-largest-total-1: "&a{rank} &7- &f{player} &7 - &a{amount}cm"
+leaderboard-largest-total-2: "&b{rank} &7- &f{player} &7 - &b{amount}cm"
+leaderboard-largest-total-3: "&e{rank} &7- &f{player} &7 - &e{amount}cm"
+leaderboard-most-fish: " &#B8FFD0{position} &7- &f{player} &7 - &#B8FFD0{amount} &#B0B0B0fish"
+leaderboard-most-fish-1: "&a{rank} &7- &f{player} &7 - &a{amount} &ffish"
+leaderboard-most-fish-2: "&b{rank} &7- &f{player} &7 - &b{amount} &ffish"
+leaderboard-most-fish-3: "&e{rank} &7- &f{player} &7 - &e{amount} &ffish"
+leaderboard-shortest-fish: " &#B8FFD0{position} &7- &f{player} &7 - &#B8FFD0{rarity} &#E0E0E0{fish} &7(&#B8FFD0{length}cm&7)"
+leaderboard-shortest-fish-1: "&a{rank} &7- &f{player} &7 - &a{rarity} &f{fish} &7(&a{length}cm&7)"
+leaderboard-shortest-fish-2: "&b{rank} &7- &f{player} &7 - &b{rarity} &f{fish} &7(&b{length}cm&7)"
+leaderboard-shortest-fish-3: "&e{rank} &7- &f{player} &7 - &e{rarity} &f{fish} &7(&e{length}cm&7)"
+leaderboard-shortest-total: " &#B8FFD0{position} &7- &f{player} &7 - &#B8FFD0{amount}cm"
+leaderboard-shortest-total-1: "&a{rank} &7- &f{player} &7 - &a{amount}cm"
+leaderboard-shortest-total-2: "&b{rank} &7- &f{player} &7 - &b{amount}cm"
+leaderboard-shortest-total-3: "&e{rank} &7- &f{player} &7 - &e{amount}cm"
 # If you're running a competition where there's no leaderboard, this message is sent when there's a winner
 single-winner: <white>{player} has won the competition for {type}. Congratulations!
 # This shows the number of players currently in the competition, set to "" to disable.
