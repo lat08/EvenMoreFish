@@ -159,6 +159,7 @@ public class ConfigGui {
                 itemSection.getStringList("click-commands").forEach(command ->
                     Bukkit.dispatchCommand(click.getWhoClicked(), command)
                 );
+                executeConsoleCommands(itemSection, click.getWhoClicked().getName());
                 return true;
             });
             gui.addElement(actionElement);
@@ -171,10 +172,25 @@ public class ConfigGui {
                 itemSection.getStringList("click-commands").forEach(command ->
                     Bukkit.dispatchCommand(click.getWhoClicked(), command)
                 );
+                executeConsoleCommands(itemSection, click.getWhoClicked().getName());
                 return true;
             });
             gui.addElement(element);
         }
+    }
+
+    /**
+     * Executes console commands from the item section configuration.
+     * Replaces %player% placeholder with the player's name.
+     *
+     * @param itemSection The configuration section containing console-commands
+     * @param playerName The name of the player to replace in placeholders
+     */
+    private void executeConsoleCommands(@NotNull Section itemSection, @NotNull String playerName) {
+        itemSection.getStringList("console-commands").forEach(command -> {
+            String processedCommand = command.replace("%player%", playerName);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), processedCommand);
+        });
     }
 
     public void doRescue() {
