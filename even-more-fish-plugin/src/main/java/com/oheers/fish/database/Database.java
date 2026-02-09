@@ -676,6 +676,38 @@ public class Database implements DatabaseAPI {
         }.prepareAndRunQuery();
     }
 
+    /**
+     * Đếm số lượng fish đã unlock của user trong một rarity cụ thể.
+     *
+     * @param userId Database ID của user
+     * @param rarityId ID của rarity
+     * @return Số lượng fish đã unlock, 0 nếu không có
+     */
+    @Override
+    public int countUnlockedFishInRarity(int userId, @NotNull String rarityId) {
+        return new ExecuteQuery<Integer>(connectionFactory, settings) {
+            @Override
+            protected Integer onRunQuery(DSLContext dslContext) throws Exception {
+                Integer count = dslContext.select(DSL.countDistinct(Tables.USER_FISH_STATS.FISH_NAME))
+                        .from(Tables.USER_FISH_STATS)
+                        .where(Tables.USER_FISH_STATS.USER_ID.eq(userId)
+                                .and(Tables.USER_FISH_STATS.FISH_RARITY.eq(rarityId)))
+                        .fetchOne(0, int.class);
+                
+                if (count == null) {
+                    return empty();
+                }
+                
+                return count;
+            }
+
+            @Override
+            protected Integer empty() {
+                return 0;
+            }
+        }.prepareAndRunQuery();
+    }
+
     public void batchInsertFishLogs(Collection<FishLog> logs) {
         new ExecuteUpdate(connectionFactory, settings) {
             @Override

@@ -86,6 +86,15 @@ public interface DatabaseAPI {
     boolean userHasRarity(@NotNull String rarity, int id);
 
     /**
+     * Đếm số lượng fish đã unlock của user trong một rarity cụ thể.
+     *
+     * @param userId Database ID của user
+     * @param rarityId ID của rarity
+     * @return Số lượng fish đã unlock, 0 nếu không có
+     */
+    int countUnlockedFishInRarity(int userId, @NotNull String rarityId);
+
+    /**
      * Creates a competition report in the database.
      *
      * @param competition The competition to record

@@ -5,8 +5,11 @@ import com.oheers.fish.FishUtils;
 import com.oheers.fish.competition.Competition;
 import com.oheers.fish.competition.CompetitionEntry;
 import com.oheers.fish.competition.CompetitionType;
+import com.oheers.fish.database.Database;
 import com.oheers.fish.database.model.user.UserReport;
 import com.oheers.fish.fishing.items.Fish;
+import com.oheers.fish.fishing.items.FishManager;
+import com.oheers.fish.fishing.items.Rarity;
 import com.oheers.fish.messages.ConfigMessage;
 import com.oheers.fish.messages.abstracted.EMFMessage;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -73,7 +76,8 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
     }
 
     private List<HandlerDefinition> createHandlers() {
-        return Stream.of(
+        return Stream.concat(
+                Stream.of(
                         // Competition placeholders
                         new HandlerDefinition(
                                 id -> id.startsWith("competition_place_size_"),
@@ -103,6 +107,29 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                                 this::handleTotalFishSold
                         ),
 
+                        // Rarity fish stats placeholders
+                        new HandlerDefinition(
+                                id -> id.startsWith("fish_unlocked_"),
+                                Priority.GENERAL_PATTERN,
+                                this::handleFishUnlocked
+                        ),
+                        new HandlerDefinition(
+                                id -> id.startsWith("fish_total_"),
+                                Priority.GENERAL_PATTERN,
+                                this::handleFishTotal
+                        ),
+                        new HandlerDefinition(
+                                id -> id.startsWith("fish_percentage_"),
+                                Priority.GENERAL_PATTERN,
+                                this::handleFishPercentage
+                        ),
+                        new HandlerDefinition(
+                                id -> id.startsWith("fish_status_"),
+                                Priority.GENERAL_PATTERN,
+                                this::handleFishStatus
+                        )
+                ),
+                Stream.of(
                         // Exact match placeholders
                         new HandlerDefinition(
                                 id -> id.equalsIgnoreCase("competition_time_left"),
@@ -135,6 +162,7 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
                                 this::handleCompetitionTypeFormat
                         )
                 )
+        )
                 .sorted(Comparator.comparingInt(def -> def.priority().ordinal()))
                 .toList();
     }
@@ -297,6 +325,130 @@ public class PlaceholderReceiver extends PlaceholderExpansion {
         return plugin.getToggle().isCustomFishingDisabled(player)
                 ? ConfigMessage.CUSTOM_FISHING_DISABLED.getMessage().getLegacyMessage()
                 : ConfigMessage.CUSTOM_FISHING_ENABLED.getMessage().getLegacyMessage();
+    }
+
+    private @NotNull String handleFishUnlocked(Player player, @NotNull String identifier) {
+        if (player == null) {
+            return "0";
+        }
+
+        try {
+            String rarityId = identifier.substring("fish_unlocked_".length());
+            if (rarityId.isEmpty()) {
+                return "0";
+            }
+
+            Database database = plugin.getPluginDataManager().getDatabase();
+            if (database == null) {
+                return "0";
+            }
+
+            int userId = plugin.getPluginDataManager().getUserManager().getUserId(player.getUniqueId());
+            if (userId == 0) {
+                return "0";
+            }
+
+            int unlocked = database.countUnlockedFishInRarity(userId, rarityId);
+            return String.valueOf(unlocked);
+        } catch (Exception exception) {
+            return "0";
+        }
+    }
+
+    private @NotNull String handleFishTotal(Player player, @NotNull String identifier) {
+        try {
+            String rarityId = identifier.substring("fish_total_".length());
+            if (rarityId.isEmpty()) {
+                return "0";
+            }
+
+            Rarity rarity = FishManager.getInstance().getRarity(rarityId);
+            if (rarity == null) {
+                return "0";
+            }
+
+            int total = rarity.getFishList().size();
+            return String.valueOf(total);
+        } catch (Exception exception) {
+            return "0";
+        }
+    }
+
+    private @NotNull String handleFishPercentage(Player player, @NotNull String identifier) {
+        if (player == null) {
+            return "0.00";
+        }
+
+        try {
+            String rarityId = identifier.substring("fish_percentage_".length());
+            if (rarityId.isEmpty()) {
+                return "0.00";
+            }
+
+            Rarity rarity = FishManager.getInstance().getRarity(rarityId);
+            if (rarity == null) {
+                return "0.00";
+            }
+
+            int total = rarity.getFishList().size();
+            if (total == 0) {
+                return "0.00";
+            }
+
+            Database database = plugin.getPluginDataManager().getDatabase();
+            if (database == null) {
+                return "0.00";
+            }
+
+            int userId = plugin.getPluginDataManager().getUserManager().getUserId(player.getUniqueId());
+            if (userId == 0) {
+                return "0.00";
+            }
+
+            int unlocked = database.countUnlockedFishInRarity(userId, rarityId);
+            double percentage = (unlocked * 100.0) / total;
+            return String.format("%.2f", percentage);
+        } catch (Exception exception) {
+            return "0.00";
+        }
+    }
+
+    private @NotNull String handleFishStatus(Player player, @NotNull String identifier) {
+        if (player == null) {
+            return "Incomplete";
+        }
+
+        try {
+            String rarityId = identifier.substring("fish_status_".length());
+            if (rarityId.isEmpty()) {
+                return "Incomplete";
+            }
+
+            Rarity rarity = FishManager.getInstance().getRarity(rarityId);
+            if (rarity == null) {
+                return "Incomplete";
+            }
+
+            int total = rarity.getFishList().size();
+            if (total == 0) {
+                return "Incomplete";
+            }
+
+            Database database = plugin.getPluginDataManager().getDatabase();
+            if (database == null) {
+                return "Incomplete";
+            }
+
+            int userId = plugin.getPluginDataManager().getUserManager().getUserId(player.getUniqueId());
+            if (userId == 0) {
+                return "Incomplete";
+            }
+
+            int unlocked = database.countUnlockedFishInRarity(userId, rarityId);
+            return unlocked >= total ? "Complete" : "Incomplete";
+        } catch (Exception exception) {
+            return "Incomplete";
+        }
     }
 
     /* Helper Methods */
