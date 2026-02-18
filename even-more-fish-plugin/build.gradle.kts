@@ -59,7 +59,6 @@ dependencies {
     }
 
     compileOnly(libs.aura.skills)
-    compileOnly(libs.aurelium.skills)
 
     compileOnly(libs.griefprevention)
     compileOnly(libs.mcmmo) {
@@ -80,7 +79,6 @@ dependencies {
     implementation(libs.jooq)
     implementation(libs.jooq.codegen)
     implementation(libs.jooq.meta)
-    implementation(libs.bundles.connectors)
     implementation(libs.hikaricp)
 
     compileOnly(libs.bundles.flyway) {

@@ -32,6 +32,8 @@ dependencies {
 
     library(libs.boostedyaml)
     compileOnlyApi(libs.boostedyaml)
+
+    library(libs.bundles.connectors)
 }
 
 afterEvaluate {
@@ -54,7 +56,7 @@ tasks {
     }
     // Quick manual testing, don't use this in ci/cd
     runServer {
-        minecraftVersion("1.21.10")
+        minecraftVersion("1.21.11")
         jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 }
