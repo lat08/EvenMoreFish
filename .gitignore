@@ -5,8 +5,9 @@
 *.ipr
 *.iws
 
-# IntelliJ
+# IntelliJ / IDE output
 out/
+bin/
 
 # Compiled class file
 *.class
